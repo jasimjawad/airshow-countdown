@@ -3,210 +3,110 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Future Launch • Countdown</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
+  <title>Dubai Airshow • Kiosk Loop</title>
   <style>
-    :root{
-      --bg-dim: 0.28;
-      --accent: #09f5ff;
-      --accent-2: #7b61ff;
-      --text: #eaf6ff;
-      --muted: #b9c6d0;
-      --glass: rgba(255,255,255,0.05);
-      --maxw: 1180px;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%;}
-    body{
-      margin:0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
-      color: var(--text);
-      background: #05070b;
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: #000;
       overflow: hidden;
     }
-    .bg{ position: fixed; inset:0; overflow:hidden; z-index:-2; }
-    .bg video{
-      position:absolute; min-width:100%; min-height:100%;
-      top:50%; left:50%; transform:translate(-50%,-50%);
-      filter: saturate(0.8) contrast(1.05) brightness(calc(1 - var(--bg-dim)));
-      object-fit: cover;
-    }
-    .bg::after{
-      content:""; position:absolute; inset:0; z-index:1; pointer-events:none;
-      background: radial-gradient(1200px 600px at 70% 20%, rgba(9,245,255,0.20), transparent 50%),
-                  radial-gradient(900px 500px at 20% 80%, rgba(123,97,255,0.20), transparent 50%),
-                  linear-gradient(to bottom, rgba(0,0,0,0.35), rgba(0,0,0,0.55));
-      mix-blend-mode: screen;
-    }
-    .grid-overlay{
-      position: fixed; inset:0; z-index:-1; pointer-events:none;
-      background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
-                        linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
-      background-size: 40px 40px, 40px 40px;
-      mask-image: radial-gradient(60% 60% at 50% 50%, black 40%, transparent 100%);
-      animation: drift 30s linear infinite;
-    }
-    @keyframes drift{ from{background-position:0 0, 0 0} to{background-position:0 40px, 40px 0} }
-    .wrap{ position:relative; display:grid; place-items:center; min-height:100vh; padding: clamp(16px, 4vw, 48px); }
-    .content{ width:100%; max-width: var(--maxw); text-align:center; position: relative; }
-
-    .content-overlay{ 
-      position: absolute; 
-      inset: -20px; 
-      background: rgba(255,255,255,0.05);
-      border-radius: 32px;
-      backdrop-filter: blur(8px);
-      z-index: -1;
-      pointer-events: none;
+    .stage {
+      position: fixed;
+      inset: 0;
       overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.12);
     }
-    .content-overlay::before {
-      content: "";
+    iframe, video {
       position: absolute;
       inset: 0;
-      padding: 3px;
-      border-radius: inherit;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      -webkit-mask: 
-        linear-gradient(#000 0 0) content-box, 
-        linear-gradient(#000 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      pointer-events: none;
-      box-shadow: 0 0 25px rgba(123, 97, 255, 0.4), 0 0 35px rgba(9, 245, 255, 0.4);
+      width: 100%;
+      height: 100%;
+      border: 0;
+      object-fit: cover;
     }
-
-    .brand{ display:flex; align-items:center; justify-content:center; gap:16px; margin: 24px 0 16px; filter: drop-shadow(0 0 24px rgba(9,245,255,0.25)); }
-    .brand .name{ font-family: Orbitron, Inter, sans-serif; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; font-size: 1.15em; }
-    .event-info{ 
-      color: var(--muted); 
-      font-size: clamp(13.8px, 1.61vw, 18.4px); 
-      margin-bottom: 0; 
-      font-family: Inter, sans-serif; 
-      font-weight: 400; 
-      letter-spacing: 0.05em;
-      text-align: center;
-    }
-    h1{ font-family: Orbitron, Inter, sans-serif; font-size: clamp(28px, 5vw, 72px); margin: 10px 0 8px; line-height:1.05;
-        text-shadow: 0 0 14px rgba(9,245,255,0.35), 0 0 30px rgba(123,97,255,0.25); }
-    .sub{ color: var(--text); font-size: clamp(19.8px, 2.75vw, 30.8px); margin-bottom: 28px; font-family: Orbitron, Inter, sans-serif; font-weight: 500; text-shadow: 0 0 8px rgba(9,245,255,0.3); }
-    .card{ display:inline-grid; grid-template-columns: repeat(4, minmax(80px, 1fr)); gap: clamp(10px, 2vw, 20px);
-           padding: clamp(16px, 3.5vw, 28px); border-radius: 24px; backdrop-filter: blur(10px);
-           background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
-           border: 1px solid rgba(255,255,255,0.15);
-           box-shadow: 0 10px 60px rgba(0,0,0,0.4), inset 0 0 30px rgba(9,245,255,0.08);
-           margin: 0 auto 26px; width:min(100%, 900px);
-    }
-    .unit{ position:relative; padding:18px 12px; border-radius:18px; background: var(--glass); }
-    .unit:before{ content:""; position:absolute; inset:-2px; border-radius:inherit; padding:2px; background: linear-gradient(135deg, rgba(9,245,255,0.65), rgba(123,97,255,0.65));
-                  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
-    .value{ font: 800 clamp(26px, 6vw, 64px) / 1 Orbitron, Inter, sans-serif; letter-spacing:0.04em; }
-    .label{ color: var(--muted); text-transform:uppercase; letter-spacing:0.16em; font-size: clamp(10px, 1.6vw, 12px); margin-top:8px; }
-    .cta{ display:flex; align-items:center; justify-content:center; gap: 14px; flex-wrap:wrap; margin-top: 8px; }
-    .btn{ appearance:none; border:none; cursor:pointer; padding:14px 18px; border-radius:14px; font-weight:700;
-          background: linear-gradient(135deg, var(--accent), var(--accent-2)); color:#001017;
-          box-shadow: 0 10px 30px rgba(9,245,255,0.35), 0 10px 30px rgba(123,97,255,0.35); }
-    .btn.ghost{ background: transparent; color: var(--text); border:1px solid rgba(255,255,255,0.3); }
-    @media (max-width: 640px){ .card{ grid-template-columns: repeat(2, 1fr); } }
-
-    /* =========================
-       Top Corner Logos
-       ========================= */
-    .side-logo{ 
-      position: fixed; top: 20px;
-      z-index: 10; display: inline-flex; align-items: center; justify-content: center;
-      padding: 8px; border-radius: 14px; backdrop-filter: blur(8px);
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.18);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.45), inset 0 0 24px rgba(9,245,255,0.08);
-      transition: transform .25s ease, box-shadow .25s ease, opacity .25s ease;
-    }
-    .side-logo::before{
-      content:""; position:absolute; inset:-2px; border-radius:inherit; padding:2px;
-      background: transparent;
-      -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-      -webkit-mask-composite:xor; mask-composite: exclude; pointer-events:none;
-    }
-    .side-logo img{ display:block; width: clamp(112px, 12.25vw, 175px); height:auto; filter: drop-shadow(0 0 12px rgba(9,245,255,0.25)); }
-    .side-logo.left{ left: 20px; }
-    .side-logo.right{ right: 20px; }
-    .side-logo:hover{ box-shadow: 0 14px 40px rgba(9,245,255,0.25), 0 14px 40px rgba(123,97,255,0.25); transform: scale(1.05); }
+    .hidden { opacity: 0; pointer-events: none; }
+    .visible { opacity: 1; }
+    .fade { transition: opacity 600ms ease; }
   </style>
 </head>
 <body>
-  <div class="bg" aria-hidden="true">
-    <video id="bgVideo" autoplay muted loop playsinline poster="" preload="auto">
-      <source src="assets/background.mp4" type="video/mp4" />
+  <div class="stage">
+    <!-- Countdown page -->
+    <iframe
+      id="countdown"
+      class="fade visible"
+      src="countdown.html"
+      loading="eager"
+      referrerpolicy="no-referrer"
+      allow="fullscreen; autoplay">
+    </iframe>
+
+    <!-- Promotional video -->
+    <video
+      id="promo"
+      class="fade hidden"
+      playsinline
+      webkit-playsinline
+      muted
+      preload="auto">
+      <source src="assets/promo.mp4" type="video/mp4" />
       Your browser does not support the video tag.
     </video>
   </div>
-  <div class="grid-overlay"></div>
-
-  <!-- Top Left & Right logos -->
-  <a class="side-logo left" href="#" target="_blank" rel="noopener" aria-label="Left sponsor">
-    <img src="assets/logo-left.png" alt="Left sponsor logo" />
-  </a>
-  <a class="side-logo right" href="#" target="_blank" rel="noopener" aria-label="Right sponsor">
-    <img src="assets/logo-right.png" alt="Right sponsor logo" />
-  </a>
-
-  <main class="wrap">
-    <section class="content">
-      <div class="content-overlay"></div>
-      
-      <h1>Dubai Airshow 2025</h1>
-      <p class="sub">The future <strong>is here</strong></p>
-
-      <div class="card" role="timer" aria-live="polite">
-        <div class="unit"><div id="days" class="value">00</div><div class="label">Days</div></div>
-        <div class="unit"><div id="hours" class="value">00</div><div class="label">Hours</div></div>
-        <div class="unit"><div id="minutes" class="value">00</div><div class="label">Minutes</div></div>
-        <div class="unit"><div id="seconds" class="value">00</div><div class="label">Seconds</div></div>
-      </div>
-
-      <div class="brand">
-        <div class="name">Engineering the Future of Aerospace</div>
-      </div>
-      <div class="event-info">17-21 November 2025 | DWC, Dubai Airshow Site</div>
-
-    </section>
-  </main>
 
   <script>
-    const LAUNCH_AT = new Date('2025-11-17T10:00:00');
+    // === CONFIGURATION ===
+    const COUNTDOWN_MIN_DURATION_MS = 10_000; // show countdown for 10s before switching to video
+    const VIDEO_RETRY_FALLBACK_MS = 3_000;    // fallback if video can't play
 
-    document.documentElement.style.setProperty('--bg-dim', '0.28');
+    const iframe = document.getElementById("countdown");
+    const video = document.getElementById("promo");
 
-    const $ = (id) => document.getElementById(id);
-    const pad = (n) => String(n).padStart(2, '0');
+    let showing = "countdown";
 
-    function tick(){
-      const now = new Date();
-      let diff = LAUNCH_AT - now;
-      if(diff <= 0){
-        ['days','hours','minutes','seconds'].forEach(id => $(id).textContent = '00');
-        document.querySelector('h1').textContent = 'We Are Live';
-        document.querySelector('.sub').textContent = 'Thanks for waiting — refresh to experience the launch.';
-        clearInterval(timer);
-        return;
-      }
-      const s = Math.floor(diff / 1000);
-      const d = Math.floor(s / 86400);
-      const h = Math.floor((s % 86400) / 3600);
-      const m = Math.floor((s % 3600) / 60);
-      const sec = s % 60;
-      $('days').textContent = pad(d);
-      $('hours').textContent = pad(h);
-      $('minutes').textContent = pad(m);
-      $('seconds').textContent = pad(sec);
+    function show(elShow, elHide) {
+      elShow.classList.remove("hidden");
+      elShow.classList.add("visible");
+      elHide.classList.remove("visible");
+      elHide.classList.add("hidden");
     }
-    const timer = setInterval(tick, 1000); tick();
+
+    async function toVideo() {
+      showing = "video";
+      show(video, iframe);
+      try {
+        await video.play();
+      } catch (e) {
+        console.warn("Video autoplay failed, retrying countdown...");
+        setTimeout(toCountdown, VIDEO_RETRY_FALLBACK_MS);
+      }
+    }
+
+    function toCountdown() {
+      showing = "countdown";
+      show(iframe, video);
+      try {
+        video.pause();
+        video.currentTime = 0;
+      } catch (e) {}
+      setTimeout(() => {
+        if (showing === "countdown") toVideo();
+      }, COUNTDOWN_MIN_DURATION_MS);
+    }
+
+    // Loop back after video ends or error
+    video.addEventListener("ended", toCountdown);
+    video.addEventListener("error", toCountdown);
+
+    // Resume properly if page regains focus
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible" && showing === "video") {
+        video.play().catch(() => setTimeout(toCountdown, VIDEO_RETRY_FALLBACK_MS));
+      }
+    });
+
+    // Start the sequence
+    toCountdown();
   </script>
 </body>
 </html>
-
-
-
-
